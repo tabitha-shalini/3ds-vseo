@@ -10,8 +10,8 @@ RUN apk add --no-cache \
     git \
     curl
 
-# Install yt-dlp for YouTube audio extraction
-RUN pip3 install yt-dlp
+# Install yt-dlp for YouTube audio extraction (with fix for newer Python)
+RUN pip3 install --break-system-packages yt-dlp
 
 # Verify installations
 RUN yt-dlp --version && ffmpeg -version
