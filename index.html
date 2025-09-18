@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3DS VSEO - Video SEO Optimizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .tier-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .tier-tab {
+            background: rgba(255,255,255,0.2);
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .tier-tab.active {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        .tier-tab:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        
+        .main-content {
+            padding: 40px;
+        }
+        
+        .tier-content {
+            display: none;
+        }
+        
+        .tier-content.active {
+            display: block;
+        }
+        
+        .tier-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        
+        .tier-header h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .tier-header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        input[type="url"], input[type="text"], select, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px dashed #e1e1e1;
+            border-radius: 10px;
+            font-size: 16px;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+        
+        .api-config {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .api-config h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.2em;
+        }
+        
+        .button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .button.primary {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        
+        .button.secondary {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+        
+        .button.danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        
+        .status.loading {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #bbdefb;
+        }
+        
+        .status.success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+        
+        .status.info {
+            background: #fff3e0;
+            color: #f57c00;
+            border: 1px solid #ffcc02;
+        }
+        
+        .results-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        
+        .results-section h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.3em;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .result-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .result-item h4 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .result-content {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .copy-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-button:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+        
+        .transcription-preview {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid #e1e1e1;
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .tag {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+        
+        .chapters {
+            list-style: none;
+        }
+        
+        .chapters li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-family: monospace;
+        }
+        
+        .chapters li:last-child {
+            border-bottom: none;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1976d2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .help-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .feature-badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .youtube-link {
+            background: #ff0000;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .youtube-link:hover {
+            background: #cc0000;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎥 3DS VSEO</h1>
+            <p>AI-powered video SEO optimization for your team</p>
+            
+            <div class="tier-tabs">
+                <div class="tier-tab active" data-tier="tier1">
+                    🚀 Auto Mode
+                    <span class="feature-badge">FULL AUTO</span>
+                </div>
+                <div class="tier-tab" data-tier="tier2">
+                    ✏️ Manual Mode
+                    <span class="feature-badge">PREVIEW</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <!-- TIER 1: FULL AUTOMATION -->
+            <div id="tier1" class="tier-content active">
+                <div class="tier-header">
+                    <h2>🚀 Full Automation Mode</h2>
+                    <p>Paste YouTube URL → AI optimizes → Auto-updates video on YouTube</p>
+                </div>
+                
+                <form id="tier1Form">
+                    <div class="form-group">
+                        <label for="tier1YoutubeUrl">YouTube Video URL</label>
+                        <input 
+                            type="url" 
+                            id="tier1YoutubeUrl" 
+                            placeholder="https://www.youtube.com/watch?v=VIDEO_ID"
+                            required
+                        />
+                        <div class="help-text">The video will be automatically optimized and updated</div>
+                    </div>
+                    
+                    <div class="api-config">
+                        <h3>🔧 API Configuration</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tier1WhisperKey">OpenAI API Key (Whisper)</label>
+                                <input 
+                                    type="text" 
+                                    id="tier1WhisperKey" 
+                                    placeholder="sk-..."
+                                    required
+                                />
+                                <div class="help-text">For audio transcription</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tier1N8nWebhook">n8n Webhook URL</label>
+                                <input 
+                                    type="url" 
+                                    id="tier1N8nWebhook" 
+                                    placeholder="https://your-n8n-instance.com/webhook/youtube-optimizer"
+                                    required
+                                />
+                                <div class="help-text">Your n8n automation webhook</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="button primary">
+                        🚀 Start Full Automation
+                    </button>
+                </form>
+                
+                <div id="tier1Status" class="status" style="display: none;"></div>
+                <div id="tier1Results" class="results-section" style="display: none;"></div>
+            </div>
+            
+            <!-- TIER 2: MANUAL PREVIEW MODE -->
+            <div id="tier2" class="tier-content">
+                <div class="tier-header">
+                    <h2>✏️ Manual Preview Mode</h2>
+                    <p>Get AI suggestions → Review → Manually apply to YouTube</p>
+                </div>
+                
+                <form id="tier2Form">
+                    <div class="form-group">
+                        <label for="tier2InputType">Content Source</label>
+                        <select id="tier2InputType">
+                            <option value="youtube">YouTube URL</option>
+                            <option value="upload">Upload Audio/Video File</option>
+                        </select>
+                    </div>
+                    
+                    <div id="tier2YoutubeInput" class="form-group">
+                        <label for="tier2YoutubeUrl">YouTube Video URL</label>
+                        <input 
+                            type="url" 
+                            id="tier2YoutubeUrl" 
+                            placeholder="https://www.youtube.com/watch?v=VIDEO_ID"
+                        />
+                        <div class="help-text">We'll extract audio and show you optimization suggestions</div>
+                    </div>
+                    
+                    <div id="tier2FileInput" class="form-group" style="display: none;">
+                        <label for="tier2AudioFile">Upload Audio/Video File</label>
+                        <input 
+                            type="file" 
+                            id="tier2AudioFile" 
+                            accept="audio/*,video/*"
+                        />
+                        <div class="help-text">Supports MP3, MP4, WAV, M4A, etc. (Max 100MB)</div>
+                    </div>
+                    
+                    <div class="api-config">
+                        <h3>🔧 API Configuration</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tier2WhisperKey">OpenAI API Key (Whisper)</label>
+                                <input 
+                                    type="text" 
+                                    id="tier2WhisperKey" 
+                                    placeholder="sk-..."
+                                    required
+                                />
+                                <div class="help-text">For transcription</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tier2ChatGptKey">ChatGPT API Key</label>
+                                <input 
+                                    type="text" 
+                                    id="tier2ChatGptKey" 
+                                    placeholder="sk-..."
+                                    required
+                                />
+                                <div class="help-text">For content optimization</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="button" class="button secondary" id="tier2Transcribe">
+                            📝 Get Transcription Only
+                        </button>
+                        
+                        <button type="submit" class="button primary">
+                            ✨ Get Full Optimization
+                        </button>
+                    </div>
+                </form>
+                
+                <div id="tier2Status" class="status" style="display: none;"></div>
+                <div id="tier2Results" class="results-section" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class YouTubeOptimizer {
+            constructor() {
+                this.currentTier = 'tier1';
+                this.initializeEventListeners();
+            }
+            
+            initializeEventListeners() {
+                // Tier tab switching
+                document.querySelectorAll('.tier-tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        const tier = e.target.dataset.tier;
+                        this.switchTier(tier);
+                    });
+                });
+                
+                // Tier 1 form
+                document.getElementById('tier1Form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleTier1Submission();
+                });
+                
+                // Tier 2 form and controls
+                document.getElementById('tier2Form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleTier2Submission(true);
+                });
+                
+                document.getElementById('tier2Transcribe').addEventListener('click', () => {
+                    this.handleTier2Submission(false);
+                });
+                
+                document.getElementById('tier2InputType').addEventListener('change', (e) => {
+                    this.toggleTier2Input(e.target.value);
+                });
+            }
+            
+            switchTier(tier) {
+                // Update tabs
+                document.querySelectorAll('.tier-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelector(`[data-tier="${tier}"]`).classList.add('active');
+                
+                // Update content
+                document.querySelectorAll('.tier-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tier).classList.add('active');
+                
+                this.currentTier = tier;
+            }
+            
+            toggleTier2Input(type) {
+                const youtubeInput = document.getElementById('tier2YoutubeInput');
+                const fileInput = document.getElementById('tier2FileInput');
+                
+                if (type === 'youtube') {
+                    youtubeInput.style.display = 'block';
+                    fileInput.style.display = 'none';
+                    document.getElementById('tier2YoutubeUrl').required = true;
+                    document.getElementById('tier2AudioFile').required = false;
+                } else {
+                    youtubeInput.style.display = 'none';
+                    fileInput.style.display = 'block';
+                    document.getElementById('tier2YoutubeUrl').required = false;
+                    document.getElementById('tier2AudioFile').required = true;
+                }
+            }
+            
+            async handleTier1Submission() {
+                const formData = this.getTier1FormData();
+                
+                this.setStatus('tier1', 'loading', '🚀 Starting full automation...');
+                
+                try {
+                    // Step 1: Process video and send to n8n
+                    const response = await this.processVideoForAutomation(formData);
+                    
+                    if (response.success) {
+                        this.setStatus('tier1', 'success', '✅ Video sent for automation! Check your n8n workflow for progress.');
+                        this.showTier1Results(response);
+                    } else {
+                        throw new Error(response.error || 'Processing failed');
+                    }
+                    
+                } catch (error) {
+                    console.error('Tier 1 error:', error);
+                    this.setStatus('tier1', 'error', `❌ Error: ${error.message}`);
+                }
+            }
+            
+            async handleTier2Submission(fullOptimization) {
+                const formData = this.getTier2FormData();
+                
+                if (fullOptimization) {
+                    this.setStatus('tier2', 'loading', '✨ Getting transcription and optimization...');
+                } else {
+                    this.setStatus('tier2', 'loading', '📝 Getting transcription only...');
+                }
+                
+                try {
+                    // Step 1: Get transcription
+                    const transcription = await this.getTranscription(formData);
+                    
+                    if (fullOptimization) {
+                        // Step 2: Get optimization
+                        const optimization = await this.getOptimization(transcription, formData);
+                        this.showTier2Results(transcription, optimization, formData);
+                        this.setStatus('tier2', 'success', '✅ Optimization complete! Review and apply manually.');
+                    } else {
+                        this.showTier2Results(transcription, null, formData);
+                        this.setStatus('tier2', 'success', '✅ Transcription complete!');
+                    }
+                    
+                } catch (error) {
+                    console.error('Tier 2 error:', error);
+                    this.setStatus('tier2', 'error', `❌ Error: ${error.message}`);
+                }
+            }
+            
+            getTier1FormData() {
+                return {
+                    youtubeUrl: document.getElementById('tier1YoutubeUrl').value,
+                    whisperApiKey: document.getElementById('tier1WhisperKey').value,
+                    n8nWebhookUrl: document.getElementById('tier1N8nWebhook').value
+                };
+            }
+            
+            getTier2FormData() {
+                const inputType = document.getElementById('tier2InputType').value;
+                return {
+                    inputType,
+                    youtubeUrl: inputType === 'youtube' ? document.getElementById('tier2YoutubeUrl').value : null,
+                    audioFile: inputType === 'upload' ? document.getElementById('tier2AudioFile').files[0] : null,
+                    whisperApiKey: document.getElementById('tier2WhisperKey').value,
+                    chatGptApiKey: document.getElementById('tier2ChatGptKey').value
+                };
+            }
+            
+            async processVideoForAutomation(formData) {
+                // This calls your backend API which handles the full automation
+                const response = await fetch('/api/process-video', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Server error');
+                }
+                
+                return await response.json();
+            }
+            
+            async getTranscription(formData) {
+                if (formData.inputType === 'youtube') {
+                    // Extract audio from YouTube and transcribe
+                    const response = await fetch('/api/transcribe-youtube', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            youtubeUrl: formData.youtubeUrl,
+                            whisperApiKey: formData.whisperApiKey
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Transcription failed');
+                    }
+                    
+                    const result = await response.json();
+                    return result.transcription;
+                    
+                } else {
+                    // Upload file and transcribe
+                    const formDataObj = new FormData();
+                    formDataObj.append('audio', formData.audioFile);
+                    formDataObj.append('whisperApiKey', formData.whisperApiKey);
+                    
+                    const response = await fetch('/api/transcribe-audio', {
+                        method: 'POST',
+                        body: formDataObj
+                    });
+                    
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Transcription failed');
+                    }
+                    
+                    const result = await response.json();
+                    return result.transcription;
+                }
+            }
+            
+            async getOptimization(transcription, formData) {
+                const response = await fetch('/api/optimize-content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        transcription,
+                        chatGptApiKey: formData.chatGptApiKey,
+                        youtubeUrl: formData.youtubeUrl
+                    })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Optimization failed');
+                }
+                
+                return await response.json();
+            }
+            
+            setStatus(tier, type, message) {
+                const statusEl = document.getElementById(`${tier}Status`);
+                statusEl.style.display = 'block';
+                statusEl.className = `status ${type}`;
+                
+                if (type === 'loading') {
+                    statusEl.innerHTML = `<span class="spinner"></span>${message}`;
+                } else {
+                    statusEl.innerHTML = message;
+                }
+            }
+            
+            showTier1Results(response) {
+                const resultsEl = document.getElementById('tier1Results');
+                const videoId = this.extractVideoId(response.videoId || '');
+                
+                resultsEl.innerHTML = `
+                    <h3>🎯 Automation Started</h3>
+                    <div class="result-item">
+                        <h4>📊 Processing Status</h4>
+                        <div class="result-content">
+                            <strong>Video ID:</strong> ${response.videoId}<br>
+                            <strong>Transcription:</strong> ${response.transcription}<br>
+                            <strong>n8n Response:</strong> ${JSON.stringify(response.n8nResponse, null, 2)}
+                        </div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <h4>🔗 Monitor Progress</h4>
+                        <div class="result-content">
+                            <p>Your video is being processed by n8n. You can:</p>
+                            <a href="https://studio.youtube.com/video/${videoId}/edit" target="_blank" class="youtube-link">
+                                📺 Check YouTube Studio
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+                resultsEl.style.display = 'block';
+            }
+            
+            showTier2Results(transcription, optimization, formData) {
+                const resultsEl = document.getElementById('tier2Results');
+                const videoId = formData.youtubeUrl ? this.extractVideoId(formData.youtubeUrl) : null;
+                
+                let optimizationHtml = '';
+                if (optimization) {
+                    const chaptersHtml = optimization.chapters ? 
+                        `<ul class="chapters">
+                            ${optimization.chapters.map(ch => `<li>${ch.time} - ${ch.title}</li>`).join('')}
+                        </ul>` : 
+                        '<p>No chapters suggested</p>';
+                    
+                    const tagsHtml = optimization.tags ?
+                        `<div class="tags">
+                            ${optimization.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>` :
+                        '<p>No tags suggested</p>';
+                    
+                    optimizationHtml = `
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <h4>📝 Optimized Title</h4>
+                                <div class="result-content">${optimization.title}</div>
+                                <button class="copy-button" onclick="copyTags(${JSON.stringify(optimization.tags || [])})">📋 Copy</button>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                resultsEl.innerHTML = `
+                    <h3>🎯 Results</h3>
+                    
+                    <div class="result-item">
+                        <h4>📝 Transcription</h4>
+                        <div class="transcription-preview">${transcription}</div>
+                        <button class="copy-button" onclick="copyToClipboard(\`${transcription}\`)">📋 Copy Transcription</button>
+                    </div>
+                    
+                    ${optimizationHtml}
+                    
+                    ${videoId ? `
+                        <div class="result-item">
+                            <h4>🔗 Apply to YouTube</h4>
+                            <div class="result-content">
+                                <p>Use the optimized content above in YouTube Studio:</p>
+                                <a href="https://studio.youtube.com/video/${videoId}/edit" target="_blank" class="youtube-link">
+                                    📺 Open YouTube Studio
+                                </a>
+                            </div>
+                        </div>
+                    ` : ''}
+                `;
+                
+                resultsEl.style.display = 'block';
+            }
+            
+            extractVideoId(url) {
+                if (!url) return '';
+                const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/;
+                const match = url.match(regex);
+                return match ? match[1] : '';
+            }
+        }
+        
+        // Global utility functions for copy buttons
+        window.copyToClipboard = (text) => {
+            navigator.clipboard.writeText(text).then(() => {
+                showCopySuccess();
+            }).catch(() => {
+                fallbackCopyTextToClipboard(text);
+            });
+        };
+        
+        window.copyChapters = (chapters) => {
+            const text = chapters.map(ch => `${ch.time} - ${ch.title}`).join('\n');
+            copyToClipboard(text);
+        };
+        
+        window.copyTags = (tags) => {
+            const text = tags.join(', ');
+            copyToClipboard(text);
+        };
+        
+        function showCopySuccess() {
+            // Create temporary success message
+            const msg = document.createElement('div');
+            msg.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 1000;
+                font-weight: 600;
+            `;
+            msg.textContent = '✅ Copied to clipboard!';
+            document.body.appendChild(msg);
+            
+            setTimeout(() => {
+                document.body.removeChild(msg);
+            }, 2000);
+        }
+        
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.position = 'fixed';
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                showCopySuccess();
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // Initialize the app
+        new YouTubeOptimizer();
+    </script>
+</body>
+</html>-button" onclick="copyToClipboard('${optimization.title}')">📋 Copy</button>
+                            </div>
+                            
+                            <div class="result-item">
+                                <h4>📄 Optimized Description</h4>
+                                <div class="result-content">${optimization.description}</div>
+                                <button class="copy-button" onclick="copyToClipboard(\`${optimization.description}\`)">📋 Copy</button>
+                            </div>
+                            
+                            <div class="result-item">
+                                <h4>⏰ Chapters</h4>
+                                <div class="result-content">${chaptersHtml}</div>
+                                <button class="copy-button" onclick="copyChapters(${JSON.stringify(optimization.chapters || [])})">📋 Copy</button>
+                            </div>
+                            
+                            <div class="result-item">
+                                <h4>🏷️ Tags</h4>
+                                <div class="result-content">${tagsHtml}</div>
+                                <button class="copy
